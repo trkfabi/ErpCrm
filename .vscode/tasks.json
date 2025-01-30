@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "install tailwindcss",
+      "command": "npm",
+      "args": ["install", "-D", "tailwindcss"],
+      "options": {
+        "cwd": "${workspaceFolder}/erp-crm-frontend"
+      },
+      "presentation": {
+        "reveal": "silent"
+      }
+    }
+  ]
+}
