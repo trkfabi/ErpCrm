@@ -7,19 +7,56 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Relación entre usuarios y planes de suscripción
 model User {
-  id         Int       @id @default(autoincrement())
-  email      String    @unique
-  password   String
-  firstName   String   
-  lastName    String   
-  birthDate   DateTime?
-  roleId     Int       @default(1) // Por defecto, el rol será "ADMIN"
-  role       Role      @relation(fields: [roleId], references: [id])
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  refreshTokens RefreshToken[]
+  id               Int                @id @default(autoincrement())
+  email            String             @unique
+  password         String
+  firstName        String
+  lastName         String
+  birthDate        DateTime?
+  roleId           Int                @default(1) // Por defecto, el rol será "ADMIN"
+  role             Role               @relation(fields: [roleId], references: [id])
+  subscriptionPlanId Int?
+  subscriptionPlan SubscriptionPlan? @relation(fields: [subscriptionPlanId], references: [id])
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  refreshTokens    RefreshToken[]
+  organizations    Organization[] @relation("OrganizationOwner")
+  employees        Employee[]
 }
+
+model SubscriptionPlan {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+  price       Float     // Precio del plan
+  features    Json      // Configuración específica del plan
+  users       User[]
+}
+
+model Organization {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  owner       User      @relation(fields: [ownerId], references: [id], name: "OrganizationOwner")
+  ownerId     Int
+  employees   Employee[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Employee {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  organizationId Int
+  role          String
+  user          User       @relation(fields: [userId], references: [id])
+
+  organization  Organization @relation(fields: [organizationId], references: [id])
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
 
 model Role {
   id         Int       @id @default(autoincrement())

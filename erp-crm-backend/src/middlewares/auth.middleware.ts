@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-//import "../types/express"; // Import the extended Request interface (should be imported globally)
 import jwt from "jsonwebtoken";
 
 export const authMiddleware = (
@@ -7,18 +6,23 @@ export const authMiddleware = (
   res: Response,
   next: NextFunction
 ): void | Promise<void> => {
-  const accessToken = req.headers["x-auth-token"] as string;
+  let accessToken = req.headers.authorization as string;
   const refreshToken = req.headers["x-refresh-token"] as string;
 
   if (!accessToken) {
     res.status(401).json({
       success: false,
-      message: "Access token is required",
+      message:
+        "Access token is required. Please use `Authorization: Bearer XXXXX` header",
       results: null,
     });
+    return;
   }
 
+  console.log(accessToken);
   try {
+    accessToken = accessToken.split(" ")[1]; // separar Bearer y Token
+
     // Verificar el access token
     const decodedAccessToken = jwt.verify(
       accessToken,
@@ -51,7 +55,7 @@ export const authMiddleware = (
 
         // Añadir la información del usuario al request
         req.user = decodedRefreshToken;
-
+        console.log(req.user);
         return next();
       } catch (refreshError) {
         res.status(401).json({

@@ -45,14 +45,14 @@ class AuthModel {
     // Generar el access token (si 'remember me' está activado, puedes generar uno con más tiempo de expiración)
     const accessToken = jwt.sign(
       { userId: user.id, email: user.email },
-      process.env.JWT_SECRET!, // Asegúrate de que 'JWT_SECRET' esté en tu .env
+      process.env.ACCESS_TOKEN_SECRET!, // Asegúrate de que 'JWT_SECRET' esté en tu .env
       { expiresIn: rememberMe ? "7d" : "1h" } // 'remember me' extiende la expiración
     );
 
     // Generar el refresh token
     const refreshToken = jwt.sign(
       { userId: user.id, email: user.email },
-      process.env.JWT_SECRET!,
+      process.env.REFRESH_TOKEN_SECRET!,
       { expiresIn: "30d" } // El refresh token suele durar más tiempo
     );
 
@@ -67,22 +67,13 @@ class AuthModel {
     return { accessToken, refreshToken };
   }
 
-  async logout(refreshToken: string) {
-    // Buscar el token de refresco en la base de datos
-    const token = await prisma.refreshToken.findUnique({
-      where: { token: refreshToken },
-    });
-
-    if (!token) {
-      throw new Error("Refresh token not found");
-    }
-
+  async logout(userId: number) {
     // Eliminar el token de la base de datos
     await prisma.refreshToken.delete({
-      where: { token: refreshToken },
+      where: { userId: userId },
     });
 
-    return { success: true };
+    return { success: true, message: "Logout successful", results: null };
   }
 }
 

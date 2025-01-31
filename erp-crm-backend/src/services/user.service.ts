@@ -1,9 +1,7 @@
-import prisma from "../config/database";
-import bcrypt from "bcryptjs";
 import UserModel from "../models/user.model";
 
 class UserService {
-  async createUser(
+  async create(
     email: string,
     password: string,
     role: string,
@@ -26,64 +24,26 @@ class UserService {
     }
   }
 
-  async listUsers(
-    page: string | undefined,
-    limit: string | undefined,
-    sortby: string | undefined,
-    sortorder: string | undefined,
-    filter: string | undefined
-  ) {
-    const where: Record<string, any> = {};
+  async list(
+    skip: number,
+    limit: number,
+    sortby?: string,
+    sortorder?: string,
+    filters?: Record<string, any>[]
+  ): Promise<{ users: any[]; total: number }> {
+    const users = await UserModel.findUsers(
+      skip,
+      limit,
+      sortby,
+      sortorder,
+      filters
+    );
+    const total = await UserModel.countUsers(filters);
 
-    if (filter) {
-      const filters = JSON.parse(filter);
-
-      filters.forEach(
-        ({
-          key,
-          operator,
-          value,
-        }: {
-          key: string;
-          operator: string;
-          value: any;
-        }) => {
-          if (operator === "like") {
-            where[key] = { contains: value, mode: "insensitive" };
-          } else if (operator === "=") {
-            where[key] = value;
-          }
-        }
-      );
-    }
-
-    const orderBy: Record<string, any> = {};
-    if (sortby && sortorder) {
-      orderBy[sortby] = sortorder;
-    }
-
-    const pageNumber = page ? parseInt(page, 10) : 1;
-    const limitNumber = limit ? parseInt(limit, 10) : 10;
-
-    const users = await UserModel.findMany({
-      where,
-      orderBy,
-      skip: (pageNumber - 1) * limitNumber,
-      take: limitNumber,
-      include: { profile: true },
-    });
-
-    const totalUsers = await UserModel.count({ where });
-
-    return {
-      users,
-      total: totalUsers,
-      page: Number(page),
-      totalPages: Math.ceil(totalUsers / limitNumber),
-    };
+    return { users, total };
   }
 
-  async updateUser(
+  async update(
     id: string,
     email?: string,
     password?: string,
@@ -103,7 +63,7 @@ class UserService {
     );
   }
 
-  async deleteUser(id: string) {
+  async delete(id: string) {
     return await UserModel.deleteUser(id);
   }
 }

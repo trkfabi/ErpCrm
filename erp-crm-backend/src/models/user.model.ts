@@ -74,12 +74,60 @@ class UserModel {
     return updatedUser;
   }
 
-  async findMany(query: any) {
-    return prisma.user.findMany(query);
+  async findUsers(
+    skip: number,
+    limit: number,
+    sortby?: string,
+    sortorder?: string,
+    filters?: Record<string, any>[]
+  ) {
+    const where: Record<string, any> = {};
+
+    if (filters) {
+      filters.forEach(({ key, operator, value }) => {
+        if (operator === "like") {
+          where[key] = { contains: value, mode: "insensitive" };
+        } else if (operator === "=") {
+          where[key] = value;
+        }
+      });
+    }
+
+    const orderBy = sortby
+      ? { [sortby]: sortorder === "desc" ? "desc" : "asc" }
+      : undefined;
+
+    return prisma.user.findMany({
+      where,
+      orderBy,
+      skip,
+      take: limit,
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        birthDate: true,
+        role: true,
+        createdAt: true,
+      },
+    });
   }
 
-  async count(query: any) {
-    return prisma.user.count(query);
+  async countUsers(filters?: Record<string, any>[]) {
+    const where: Record<string, any> = {};
+
+    if (filters) {
+      filters.forEach(({ key, operator, value }) => {
+        if (operator === "like") {
+          where[key] = { contains: value, mode: "insensitive" };
+        } else if (operator === "=") {
+          where[key] = value;
+        }
+      });
+    }
+
+    return prisma.user.count({ where });
   }
 
   async deleteUser(id: string) {

@@ -1,4 +1,5 @@
 import AuthModel from "../models/auth.model"; // Importar AuthModel
+import { Request } from "express"; // Importar Request
 
 class AuthService {
   async register(
@@ -34,10 +35,10 @@ class AuthService {
     }
   }
 
-  async logout(refreshToken: string) {
+  async logout(user: Request["user"]) {
     try {
       // Llamar al modelo para realizar el logout (eliminar el refresh token)
-      const result = await AuthModel.logout(refreshToken);
+      const result = await AuthModel.logout(user.id);
       return result;
     } catch (error) {
       throw new Error((error as Error).message);
