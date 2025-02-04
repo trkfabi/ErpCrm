@@ -27,6 +27,15 @@ app.use("/api/users", userRoutes);
 app.use("/api/organizations", organizationRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
 
+// Ruta de prueba para verificar el servidor
+app.get("/erpcrm/health", (req, res) => {
+  res.json({
+    success: true,
+    message: "ERPCRM API is running!",
+    results: null,
+  });
+});
+
 // Start server
 const PORT = parseInt(process.env.PORT as string, 10) || 3000;
 const ENV = process.env.NODE_ENV || "development";

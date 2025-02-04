@@ -1,0 +1,30 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main # O la rama que desees monitorear
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to VPS
+        run: |
+          ssh -o StrictHostKeyChecking=no user@vps_ip << 'EOF'
+            cd /srv/node/ErpCrm
+            git pull
+            docker build -t erpcrm-app .
+            docker stop erpcrm-app-container || true
+            docker rm erpcrm-app-container || true
+            docker run -d -p 5000:3000 --name erpcrm-app-container erpcrm-app
+          EOF
