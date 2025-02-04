@@ -28,10 +28,10 @@ app.use("/api/organizations", organizationRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
 
 // Ruta de prueba para verificar el servidor
-app.get("/health", (req, res) => {
-  res.json({
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
     success: true,
-    message: "ERPCRM API is running!",
+    message: "ERP/CRM API is running",
     results: null,
   });
 });
