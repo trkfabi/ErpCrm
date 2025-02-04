@@ -1,6 +1,5 @@
-# Use the Node.js image
-FROM node:18-alpine
-
+# Base Stage
+FROM node:18-alpine AS base
 # Set the working directory
 WORKDIR /usr/src/app
 
@@ -16,11 +15,20 @@ COPY ./prisma ./prisma
 # Copy the application source code
 COPY . .
 
-# Generate the Prisma client
-RUN npx prisma generate
-
-# Expose the application port
+# Development Stage
+FROM base AS development
+RUN npm install --only=dev
 EXPOSE 3000
-
-# Set the default command
 CMD ["npm", "run", "dev"]
+
+# Staging Stage
+FROM base AS staging
+RUN npm install --only=dev
+EXPOSE 3000
+CMD ["npm", "run", "start:staging"]
+
+# Production Stage
+FROM base AS production
+RUN npm install --only=prod
+EXPOSE 3000
+CMD ["npm", "run", "start:prod"]

@@ -3,7 +3,9 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - master # O la rama que desees monitorear
+      - master    # Production
+      - staging   # Staging
+      - development  # Development
 
 jobs:
   deploy:
@@ -21,30 +23,20 @@ jobs:
       - name: Deploy to VPS
         run: |
           ssh -o StrictHostKeyChecking=no root@145.223.120.220 << 'EOF'
-            cd /srv/node/ErpCrm
-            git pull origin master
+          
+          cd /srv/node/ErpCrm
+          git pull origin ${{ github.ref_name }}
 
-            # Enable BuildKit
-            #  export DOCKER_BUILDKIT=1
-            #  docker buildx create --use
-
-            # use docker-compose
-            docker-compose down
-            docker-compose up -d --build
-
-
-
-            # Backend
-            #cd erp-crm-backend
-            #docker stop erpcrm-backend-container || true
-            #docker rm erpcrm-backend-container || true
-            #docker build -t erpcrm-backend-app -f Dockerfile .
-            #docker run -d -p 5000:3000 --name erpcrm-backend-container erpcrm-backend-app
-
-            # Frontend
-            #cd ../erp-crm-frontend
-            #docker stop erpcrm-frontend-container || true
-            #docker rm erpcrm-frontend-container || true
-            #docker build -t erpcrm-frontend-app -f Dockerfile .
-            #docker run -d -p 5001:3001 --name erpcrm-frontend-container erpcrm-frontend-app
+        # Check the branch name and use the appropriate Docker Compose file
+          if [ "${{ github.ref_name }}" = "master" ]; then
+            docker-compose -f docker-compose.yml -f docker-compose.production.yml down
+            docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d --build
+          elif [ "${{ github.ref_name }}" = "staging" ]; then
+            docker-compose -f docker-compose.yml -f docker-compose.staging.yml down
+            docker-compose -f docker-compose.yml -f docker-compose.staging.yml up -d --build
+          elif [ "${{ github.ref_name }}" = "development" ]; then
+            docker-compose -f docker-compose.yml -f docker-compose.development.yml down
+            docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d --build
+          fi
+ 
           EOF

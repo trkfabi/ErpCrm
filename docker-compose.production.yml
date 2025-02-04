@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  backend:
+    build:
+      context: ./erp-crm-backend
+      dockerfile: Dockerfile
+      target: production
+    env_file:
+      - ./erp-crm-backend/.env.production
