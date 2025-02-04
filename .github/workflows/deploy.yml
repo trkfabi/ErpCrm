@@ -25,8 +25,8 @@ jobs:
             git pull origin master
 
             # Enable BuildKit
-              export DOCKER_BUILDKIT=1
-              docker buildx create --use
+            #  export DOCKER_BUILDKIT=1
+            #  docker buildx create --use
 
             # use docker-compose
             docker-compose down
