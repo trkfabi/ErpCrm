@@ -20,7 +20,7 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          ssh -o StrictHostKeyChecking=no user@vps_ip << 'EOF'
+          ssh -o StrictHostKeyChecking=no root@145.223.120.220 << 'EOF'
             cd /srv/node/ErpCrm
             git pull
             docker build -t erpcrm-app .
