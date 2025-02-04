@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
-import "dotenv/config";
+//import "dotenv/config";
+import dotenv from "dotenv";
 import swaggerDocs from "config/swagger";
 
 import authRoutes from "routes/auth.routes";
@@ -35,6 +36,16 @@ app.get("/api/health", (req, res) => {
     results: null,
   });
 });
+
+const envFile =
+  process.env.NODE_ENV === "production"
+    ? ".env.production"
+    : process.env.NODE_ENV === "staging"
+    ? ".env.staging"
+    : ".env.dev";
+
+dotenv.config({ path: envFile });
+console.log(`Using environment file: ${envFile}`);
 
 // Start server
 const PORT = parseInt(process.env.PORT as string, 10) || 3000;

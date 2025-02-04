@@ -31,7 +31,7 @@ const swaggerOptions: swaggerJsDoc.Options = {
 
 // Crear el espec de Swagger
 const swaggerSpec = swaggerJsDoc(swaggerOptions);
-console.log(swaggerSpec);
+
 function swaggerDocs(app: Express, port: number) {
   app.use("/api", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   app.get("/docs.json", (_: Request, res: Response) => {
