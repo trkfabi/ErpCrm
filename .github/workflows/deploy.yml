@@ -23,8 +23,24 @@ jobs:
           ssh -o StrictHostKeyChecking=no root@145.223.120.220 << 'EOF'
             cd /srv/node/ErpCrm
             git pull origin master
-            docker stop erpcrm-app-container || true
-            docker rm erpcrm-app-container || true
-            docker build -t erpcrm-app .
-            docker run -d -p 5000:3000 --name erpcrm-app-container erpcrm-app
+
+            #use docker-compose
+            docker-compose down
+            docker-compose up -d --build
+
+
+
+            # Backend
+            #cd erp-crm-backend
+            #docker stop erpcrm-backend-container || true
+            #docker rm erpcrm-backend-container || true
+            #docker build -t erpcrm-backend-app -f Dockerfile .
+            #docker run -d -p 5000:3000 --name erpcrm-backend-container erpcrm-backend-app
+
+            # Frontend
+            #cd ../erp-crm-frontend
+            #docker stop erpcrm-frontend-container || true
+            #docker rm erpcrm-frontend-container || true
+            #docker build -t erpcrm-frontend-app -f Dockerfile .
+            #docker run -d -p 5001:3001 --name erpcrm-frontend-container erpcrm-frontend-app
           EOF
