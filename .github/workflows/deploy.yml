@@ -24,7 +24,11 @@ jobs:
             cd /srv/node/ErpCrm
             git pull origin master
 
-            #use docker-compose
+            # Enable BuildKit
+              export DOCKER_BUILDKIT=1
+              docker buildx create --name mybuilder --use
+
+            # use docker-compose
             docker-compose down
             docker-compose up -d --build
 
