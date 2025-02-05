@@ -20,17 +20,18 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      # Backend
       - name: Build and Push Docker image
         run: |
           if [ "${{ github.ref_name }}" = "master" ]; then
-            docker build -t your-repo/your-app:production -f Dockerfile ./erp-crm-backend
-            docker push your-repo/your-app:production
+            docker build -t trkfabi/erp-crm-app:production -f ./erp-crm-backend/Dockerfile ./erp-crm-backend
+            docker push trkfabi/erp-crm-app:production
           elif [ "${{ github.ref_name }}" = "staging" ]; then
-            docker build -t your-repo/your-app:staging -f Dockerfile ./erp-crm-backend
-            docker push your-repo/your-app:staging
+            docker build -t trkfabi/erp-crm-app:staging -f ./erp-crm-backend/Dockerfile ./erp-crm-backend
+            docker push trkfabi/erp-crm-app:staging
           elif [ "${{ github.ref_name }}" = "development" ]; then
-            docker build -t your-repo/your-app:development -f Dockerfile ./erp-crm-backend
-            docker push your-repo/your-app:development
+            docker build -t trkfabi/erp-crm-app:development -f ./erp-crm-backend/Dockerfile ./erp-crm-backend
+            docker push trkfabi/erp-crm-app:development
           fi
 
       - name: Deploy to VPS
