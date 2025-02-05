@@ -8,4 +8,4 @@ services:
     ports:
       - "5000:3000"
     env_file:
-      - ./erp-crm-backend/.env.development
+      - ./erp-crm-backend/.env.dev
