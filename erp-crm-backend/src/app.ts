@@ -28,15 +28,6 @@ app.use("/api/users", userRoutes);
 app.use("/api/organizations", organizationRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
 
-// Ruta de prueba para verificar el servidor
-app.get("/api/health", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "ERP/CRM API is running",
-    results: null,
-  });
-});
-
 const envFile =
   process.env.NODE_ENV === "production"
     ? ".env.production"
@@ -46,6 +37,15 @@ const envFile =
 
 dotenv.config({ path: envFile });
 console.log(`Using environment file: ${envFile}`);
+
+// Ruta de prueba para verificar el servidor
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: `ERP/CRM API is running in ${process.env.NODE_ENV}`,
+    results: null,
+  });
+});
 
 // Start server
 const PORT = parseInt(process.env.PORT as string, 10) || 3000;
