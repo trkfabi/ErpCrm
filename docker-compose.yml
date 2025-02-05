@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  backend:
+    build:
+      context: ./erp-crm-backend
+      dockerfile: Dockerfile
+      target: development
+    ports:
+      - "5000:3000"
+    env_file:
+      - ./erp-crm-backend/.env.development
