@@ -11,7 +11,7 @@ services:
       - "5001:3000"
     restart: unless-stopped
   db:
-    image: postgres:14 # Choose the version of postgres
+    image: postgres:17 # Choose the version of postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: InzUsr109109
@@ -19,7 +19,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432" # Expose PostgreSQL port if needed
+      - "5434:5432" # Expose PostgreSQL port if needed
 
 volumes:
   postgres_data:
