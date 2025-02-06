@@ -1,4 +1,4 @@
-name: Deploy to VPS
+- name: Deploy to VPS
 
 on:
   push:
@@ -40,6 +40,8 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no root@145.223.120.220 << 'EOF'
             cd /srv/node/ErpCrm
+            git fetch origin
+            git reset --hard origin/${{ github.ref_name }}
             docker-compose -f docker-compose.${{ github.ref_name }}.yml down
             docker-compose -f docker-compose.${{ github.ref_name }}.yml up -d --build
           EOF
