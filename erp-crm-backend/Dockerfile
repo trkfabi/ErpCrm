@@ -18,4 +18,4 @@ RUN npx prisma generate
 EXPOSE 3000
 
 # Ejecutar el script correcto según NODE_ENV
-CMD ["sh", "-c", "npm run start:${NODE_ENV}"]
+CMD ["sh", "-c", "echo 'NODE_ENV is: $NODE_ENV' && npm run start:$NODE_ENV"]
