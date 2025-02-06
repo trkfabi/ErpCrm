@@ -10,3 +10,17 @@ services:
     ports:
       - "5001:3000"
     restart: unless-stopped
+  db:
+    image: postgres:14 # Choose the version of postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: InzUsr109109
+      POSTGRES_DB: erp_crm_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" # Expose PostgreSQL port if needed
+
+volumes:
+  postgres_data:
+    driver: local

@@ -52,6 +52,6 @@ const PORT = parseInt(process.env.PORT as string, 10) || 3000;
 const ENV = process.env.NODE_ENV || "development";
 
 app.listen(PORT, () => {
-  console.log(`Server running in ${ENV || "development"} mode on port ${PORT}`);
+  console.log(`Server running in ${ENV || "N/A"} mode on port ${PORT}`);
   swaggerDocs(app, PORT);
 });

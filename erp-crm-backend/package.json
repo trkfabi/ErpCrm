@@ -6,7 +6,7 @@
     "seed": "ts-node prisma/seed.js"
   },
   "scripts": {
-    "start:dev": "NODE_ENV=development nodemon --exec ts-node -r tsconfig-paths/register -T src/app.ts",
+    "start:development": "NODE_ENV=development nodemon --exec ts-node -r tsconfig-paths/register -T src/app.ts",
     "start:production": "NODE_ENV=production node --exec ts-node -r tsconfig-paths/register -T src/app.ts",
     "start:staging": "NODE_ENV=staging node --exec ts-node -r tsconfig-paths/register -T src/app.ts"
   },

@@ -1,6 +1,6 @@
 FROM node:18-alpine
 # Instalar curl
-RUN apk --no-cache add curl
+RUN apk --no-cache add curl postgresql-client
 
 WORKDIR /usr/src/app
 COPY package*.json ./
