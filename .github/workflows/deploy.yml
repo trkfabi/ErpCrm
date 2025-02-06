@@ -25,8 +25,16 @@ jobs:
 
       - name: Build and Push Docker image
         run: |
-          docker build -t trkfabi/erp-crm-app:${{ github.ref_name }} -f ./erp-crm-backend/Dockerfile ./erp-crm-backend
-          docker push trkfabi/erp-crm-app:${{ github.ref_name }}
+          if [ "${{ github.ref_name }}" = "master" ]; then
+            docker build --build-arg NODE_ENV=production -t trkfabi/erp-crm-app:production -f ./erp-crm-backend/Dockerfile ./erp-crm-backend
+            docker push trkfabi/erp-crm-app:production
+          elif [ "${{ github.ref_name }}" = "staging" ]; then
+            docker build --build-arg NODE_ENV=staging -t trkfabi/erp-crm-app:staging -f ./erp-crm-backend/Dockerfile ./erp-crm-backend
+            docker push trkfabi/erp-crm-app:staging
+          elif [ "${{ github.ref_name }}" = "development" ]; then
+            docker build --build-arg NODE_ENV=development -t trkfabi/erp-crm-app:development -f ./erp-crm-backend/Dockerfile ./erp-crm-backend
+            docker push trkfabi/erp-crm-app:development
+          fi
 
       - name: Deploy to VPS
         run: |

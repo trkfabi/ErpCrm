@@ -2,6 +2,12 @@ FROM node:18-alpine
 # Instalar curl
 RUN apk --no-cache add curl postgresql-client
 
+# Define build argument for NODE_ENV (default to 'development' if not passed)
+ARG NODE_ENV=development
+
+# Log the value of NODE_ENV during the build
+RUN echo "Building with NODE_ENV=${NODE_ENV}"
+
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
