@@ -23,35 +23,15 @@ jobs:
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      # Backend
       - name: Build and Push Docker image
         run: |
-          if [ "${{ github.ref_name }}" = "master" ]; then
-            docker build -t trkfabi/erp-crm-app:production -f ./erp-crm-backend/Dockerfile ./erp-crm-backend
-            docker push trkfabi/erp-crm-app:production
-          elif [ "${{ github.ref_name }}" = "staging" ]; then
-            docker build -t trkfabi/erp-crm-app:staging -f ./erp-crm-backend/Dockerfile ./erp-crm-backend
-            docker push trkfabi/erp-crm-app:staging
-          elif [ "${{ github.ref_name }}" = "development" ]; then
-            docker build -t trkfabi/erp-crm-app:development -f ./erp-crm-backend/Dockerfile ./erp-crm-backend
-            docker push trkfabi/erp-crm-app:development
-          fi
+          docker build -t trkfabi/erp-crm-app:${{ github.ref_name }} -f ./erp-crm-backend/Dockerfile ./erp-crm-backend
+          docker push trkfabi/erp-crm-app:${{ github.ref_name }}
 
       - name: Deploy to VPS
         run: |
           ssh -o StrictHostKeyChecking=no root@145.223.120.220 << 'EOF'
             cd /srv/node/ErpCrm
-            git pull origin ${{ github.ref_name }}
-
-            # Check the branch name and use the appropriate Docker Compose file
-            if [ "${{ github.ref_name }}" = "master" ]; then
-              docker-compose -f docker-compose.yml -f docker-compose.production.yml down
-              docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d --build
-            elif [ "${{ github.ref_name }}" = "staging" ]; then
-              docker-compose -f docker-compose.yml -f docker-compose.staging.yml down
-              docker-compose -f docker-compose.yml -f docker-compose.staging.yml up -d --build
-            elif [ "${{ github.ref_name }}" = "development" ]; then
-              docker-compose -f docker-compose.yml -f docker-compose.development.yml down
-              docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d --build
-            fi
+            docker-compose -f docker-compose.${{ github.ref_name }}.yml down
+            docker-compose -f docker-compose.${{ github.ref_name }}.yml up -d --build
           EOF

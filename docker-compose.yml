@@ -9,3 +9,4 @@ services:
     command: ["npm", "run", "dev"]
     ports:
       - "5000:3000"
+    restart: unless-stopped

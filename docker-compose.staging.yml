@@ -1,15 +1,3 @@
-# version: "3.8"
-# services:
-#   backend:
-#     build:
-#       context: ./erp-crm-backend
-#       dockerfile: Dockerfile
-#       target: staging
-#     ports:
-#       - "5001:3000"
-#     env_file:
-#       - ./erp-crm-backend/.env.staging
-#
 version: "3.8"
 services:
   backend:
@@ -21,3 +9,4 @@ services:
     command: ["npm", "run", "start:staging"]
     ports:
       - "5001:3000"
+    restart: unless-stopped

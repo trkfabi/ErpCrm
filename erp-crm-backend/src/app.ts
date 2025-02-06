@@ -33,7 +33,7 @@ const envFile =
     ? ".env.production"
     : process.env.NODE_ENV === "staging"
     ? ".env.staging"
-    : ".env.dev";
+    : ".env.development";
 
 dotenv.config({ path: envFile });
 console.log(`Using environment file: ${envFile}`);
